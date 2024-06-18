@@ -13,6 +13,30 @@
         android:theme="@style/Theme.EA4501"
         tools:targetApi="31">
         <activity
+            android:name=".GameDatabaseHelper"
+            android:exported="false" />
+        <activity
+            android:name=".GameRecord"
+            android:exported="false" />
+        <activity
+            android:name=".RecordsAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".RecordsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PlayerRanking"
+            android:exported="false" />
+        <activity
+            android:name=".RankingAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".RankingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GameActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
