@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,8 +32,9 @@ import androidx.annotation.Nullable;
  * create an instance of this fragment.
  */
 public class PlayFragment extends Fragment {
-    private AutoCompleteTextView playerNameInput;
-    private Button playButton, submitButton, nextButton, continueButton;
+    private TextInputEditText playerNameInput;
+    private ImageButton playButton; // Changed from Button to ImageButton
+    private Button submitButton, nextButton, continueButton;
     private TextView questionView, resultView, timerView, questionCounterView;
     private EditText answerInput;
     private String playerName;
@@ -82,6 +87,7 @@ public class PlayFragment extends Fragment {
         playerNameInput.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         continueButton.setVisibility(View.GONE);
+        timerView.setVisibility(View.VISIBLE);  // Ensure timer is visible
         generateQuestions();
         currentQuestionIndex = 0;
         correctAnswers = 0;
@@ -173,32 +179,33 @@ public class PlayFragment extends Fragment {
             showQuestion();
         } else {
             endGame();
+            continueButton.setVisibility(View.VISIBLE);
         }
     }
 
     private void endGame() {
-    long endTime = System.currentTimeMillis();
-    int totalTime = (int) ((endTime - startTime) / 1000); // total time in seconds
-    resultView.setText(String.format("%s, you got %d out of 10 correct! Total time: %d seconds", playerName, correctAnswers, totalTime));
-    playerNameInput.setVisibility(View.VISIBLE);
-    playButton.setVisibility(View.VISIBLE);
-    questionView.setVisibility(View.GONE);
+        long endTime = System.currentTimeMillis();
+        int totalTime = (int) ((endTime - startTime) / 1000); // total time in seconds
+        resultView.setText(String.format("%s, you got %d out of 10 correct! Total time: %d seconds", playerName, correctAnswers, totalTime));
+        playerNameInput.setVisibility(View.VISIBLE);
+        playButton.setVisibility(View.VISIBLE);
+        questionView.setVisibility(View.GONE);
         answerInput.setVisibility(View.GONE);
         submitButton.setVisibility(View.GONE);
         nextButton.setVisibility(View.GONE);
-    timerView.setVisibility(View.GONE);
-        continueButton.setVisibility(View.VISIBLE);
-    timerHandler.removeCallbacks(timerRunnable); // Stop the timer
-    saveRecord(totalTime);
+        timerView.setVisibility(View.GONE);
+        questionCounterView.setVisibility(View.GONE);
+        timerHandler.removeCallbacks(timerRunnable); // Stop the timer
+        saveRecord(totalTime);
     }
 
-private void saveRecord(int totalTime) {
-    SQLiteDatabase db = new GameDatabaseHelper(getActivity()).getWritableDatabase();
+    private void saveRecord(int totalTime) {
+        SQLiteDatabase db = new GameDatabaseHelper(getActivity()).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("playerName", playerName);
         values.put("playDate", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
         values.put("playTime", new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
-    values.put("duration", totalTime);
+        values.put("duration", totalTime);
         values.put("correctCount", correctAnswers);
         db.insert("GamesLog", null, values);
         db.close();

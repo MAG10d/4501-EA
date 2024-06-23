@@ -5,24 +5,33 @@
     android:gravity="center"
     android:padding="16dp">
 
-    <AutoCompleteTextView
-        android:id="@+id/playerNameInput"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your name" />
+        android:hint="User name:">
 
-    <Button
-        android:id="@+id/button_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playerNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/timerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:visibility="gone" />
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:paddingBottom="20dp"/>
+
+    <ImageButton
+        android:id="@+id/button_play"
+        android:layout_width="69dp"
+        android:layout_height="54dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Play"
+        android:src="@drawable/ic_arrow_right_drop_circle" />
 
     <TextView
         android:id="@+id/questionCounterView"
