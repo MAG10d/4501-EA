@@ -35,12 +35,13 @@ public class RecordsActivity extends AppCompatActivity {
 
         while (cursor.moveToNext()) {
             int gameId = cursor.getInt(cursor.getColumnIndexOrThrow("gameID"));
+            String playerName = cursor.getString(cursor.getColumnIndexOrThrow("playerName"));
             String playDate = cursor.getString(cursor.getColumnIndexOrThrow("playDate"));
             int playTime = cursor.getInt(cursor.getColumnIndexOrThrow("playTime"));
             int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duration"));
             int correctCount = cursor.getInt(cursor.getColumnIndexOrThrow("correctCount"));
 
-            recordsList.add(new GameRecord(gameId, playDate, playTime, duration, correctCount));
+            recordsList.add(new GameRecord(gameId, playerName, playDate, playTime, duration, correctCount));
         }
 
         cursor.close();

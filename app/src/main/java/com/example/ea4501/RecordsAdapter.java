@@ -21,11 +21,13 @@ public class RecordsAdapter extends ArrayAdapter<GameRecord> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_record, parent, false);
         }
 
+        TextView playerNameTextView = convertView.findViewById(R.id.playerNameTextView);
         TextView playDateTextView = convertView.findViewById(R.id.playDateTextView);
         TextView playTimeTextView = convertView.findViewById(R.id.playTimeTextView);
         TextView durationTextView = convertView.findViewById(R.id.durationTextView);
         TextView correctCountTextView = convertView.findViewById(R.id.correctCountTextView);
 
+        playerNameTextView.setText(record.getPlayerName());
         playDateTextView.setText(record.getPlayDate());
         playTimeTextView.setText(String.valueOf(record.getPlayTime()));
         durationTextView.setText(String.valueOf(record.getDuration()));

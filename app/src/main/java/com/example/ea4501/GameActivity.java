@@ -2,13 +2,19 @@ package com.example.ea4501;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
@@ -25,6 +31,8 @@ public class GameActivity extends AppCompatActivity {
     private int operand1, operand2, correctAnswer;
     private String operator;
     private Random random = new Random();
+    private String playerName;
+    private GameDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,9 @@ public class GameActivity extends AppCompatActivity {
         doneButton = findViewById(R.id.doneButton);
         nextButton = findViewById(R.id.nextButton);
         continueButton = findViewById(R.id.continueButton);
+
+        playerName = getIntent().getStringExtra("playerName");
+        dbHelper = new GameDatabaseHelper(this);
 
         generateQuestion();
         startTime = System.currentTimeMillis();
@@ -116,6 +127,23 @@ public class GameActivity extends AppCompatActivity {
         timeTaken = (int) ((System.currentTimeMillis() - startTime) / 1000);
         resultView.setText(String.format("Game Over! You got %d/10 correct in %d seconds.", correctCount, timeTaken));
         continueButton.setVisibility(View.VISIBLE);
+
+        saveRecord();
+    }
+
+    private void saveRecord() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("playerName", playerName);
+        values.put("playDate", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+        values.put("playTime", new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
+        values.put("duration", timeTaken);
+        values.put("correctCount", correctCount);
+
+        long newRowId = db.insert("GamesLog", null, values);
+        if (newRowId == -1) {
+            Toast.makeText(this, "Error saving record", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void startNewGame(View view) {

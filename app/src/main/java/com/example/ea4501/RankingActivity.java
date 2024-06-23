@@ -2,8 +2,11 @@ package com.example.ea4501;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ public class RankingActivity extends AppCompatActivity {
     private ListView rankingListView;
     private RankingAdapter rankingAdapter;
     private ArrayList<PlayerRanking> rankingList;
+    private GameDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,8 @@ public class RankingActivity extends AppCompatActivity {
         rankingAdapter = new RankingAdapter(this, rankingList);
         rankingListView.setAdapter(rankingAdapter);
 
+        dbHelper = new GameDatabaseHelper(this);
+
         new FetchRankingTask().execute("https://ranking-mobileasignment-wlicpnigvf.cn-hongkong.fcapp.run");
     }
 
@@ -43,17 +49,27 @@ public class RankingActivity extends AppCompatActivity {
             try {
                 URL url = new URL(urls[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setConnectTimeout(5000);
+                urlConnection.setReadTimeout(5000);
 
+                int responseCode = urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
+                    reader.close();
+                } else {
+                    Log.e("FetchRankingTask", "HTTP error code: " + responseCode);
+                    return null;
+                }
 
-                reader.close();
                 urlConnection.disconnect();
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("FetchRankingTask", "Exception: " + e.getMessage(), e);
+                return null;
             }
 
             return result.toString();
@@ -61,6 +77,11 @@ public class RankingActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            if (result == null) {
+                Toast.makeText(RankingActivity.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             try {
                 JSONArray jsonArray = new JSONArray(result);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -71,11 +92,29 @@ public class RankingActivity extends AppCompatActivity {
                     rankingList.add(new PlayerRanking(name, correct, time));
                 }
 
+                // Add local records to the ranking list
+                loadLocalRecords();
+
                 rankingAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e("FetchRankingTask", "JSON Parsing error: " + e.getMessage(), e);
                 Toast.makeText(RankingActivity.this, "Failed to parse JSON data", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void loadLocalRecords() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("GamesLog", null, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("playerName"));
+            int correct = cursor.getInt(cursor.getColumnIndexOrThrow("correctCount"));
+            int duration = cursor.getInt(cursor.getColumnIndexOrThrow("duration"));
+
+            rankingList.add(new PlayerRanking(name, correct, duration));
+        }
+
+        cursor.close();
     }
 }

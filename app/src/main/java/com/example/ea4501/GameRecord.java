@@ -2,13 +2,15 @@ package com.example.ea4501;
 
 public class GameRecord {
     private int gameId;
+    private String playerName;
     private String playDate;
     private int playTime;
     private int duration;
     private int correctCount;
 
-    public GameRecord(int gameId, String playDate, int playTime, int duration, int correctCount) {
+    public GameRecord(int gameId, String playerName, String playDate, int playTime, int duration, int correctCount) {
         this.gameId = gameId;
+        this.playerName = playerName;
         this.playDate = playDate;
         this.playTime = playTime;
         this.duration = duration;
@@ -17,6 +19,10 @@ public class GameRecord {
 
     public int getGameId() {
         return gameId;
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 
     public String getPlayDate() {
