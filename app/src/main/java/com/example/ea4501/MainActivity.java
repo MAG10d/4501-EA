@@ -1,47 +1,42 @@
 package com.example.ea4501;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText playerNameInput;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playerNameInput = findViewById(R.id.playerNameInput);
-    }
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            int itemId = item.getItemId();
 
-    public void startGame(View view) {
-        String playerName = playerNameInput.getText().toString().trim();
-        if (playerName.isEmpty()) {
-            Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            if (itemId == R.id.nav_play) {
+                selectedFragment = new PlayFragment();
+            } else if (itemId == R.id.nav_ranking) {
+                selectedFragment = new RankingFragment();
+            } else if (itemId == R.id.nav_records) {
+                selectedFragment = new RecordsFragment();
+            }
 
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("playerName", playerName);
-        startActivity(intent);
-    }
+            if (selectedFragment != null) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, selectedFragment);
+                transaction.commit();
+            }
 
-    public void showRanking(View view) {
-        Intent intent = new Intent(this, RankingActivity.class);
-        startActivity(intent);
-    }
+            return true;
+        });
 
-    public void showRecords(View view) {
-        Intent intent = new Intent(this, RecordsActivity.class);
-        startActivity(intent);
-    }
-
-    public void closeApp(View view) {
-        finish();
+        // Load the default fragment
+        bottomNavigationView.setSelectedItemId(R.id.nav_play);
     }
 }

@@ -23,19 +23,10 @@
             android:name=".RecordsAdapter"
             android:exported="false" />
         <activity
-            android:name=".RecordsActivity"
-            android:exported="false" />
-        <activity
             android:name=".PlayerRanking"
             android:exported="false" />
         <activity
             android:name=".RankingAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".RankingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GameActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

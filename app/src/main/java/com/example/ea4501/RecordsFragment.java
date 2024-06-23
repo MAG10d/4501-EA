@@ -1,32 +1,47 @@
 package com.example.ea4501;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-public class RecordsActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link RecordsFragment #newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class RecordsFragment extends Fragment {
     private ListView recordsListView;
     private RecordsAdapter recordsAdapter;
     private ArrayList<GameRecord> recordsList;
     private GameDatabaseHelper dbHelper;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_records);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_records, container, false);
 
-        recordsListView = findViewById(R.id.recordsListView);
+        recordsListView = view.findViewById(R.id.recordsListView);
         recordsList = new ArrayList<>();
-        recordsAdapter = new RecordsAdapter(this, recordsList);
+        recordsAdapter = new RecordsAdapter(getActivity(), recordsList);
         recordsListView.setAdapter(recordsAdapter);
 
-        dbHelper = new GameDatabaseHelper(this);
+        dbHelper = new GameDatabaseHelper(getActivity());
         loadRecords();
+
+        return view;
     }
 
     private void loadRecords() {
