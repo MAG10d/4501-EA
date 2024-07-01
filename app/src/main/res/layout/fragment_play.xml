@@ -83,6 +83,13 @@
             android:text="Continue"
             android:visibility="gone" />
 
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/resultView"
             android:layout_width="wrap_content"
@@ -91,6 +98,11 @@
             android:visibility="gone"
             android:background="@color/white_transparent_50" />
 
+        <ListView
+            android:id="@+id/gamesLogListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ImageView
@@ -100,5 +112,4 @@
         android:layout_gravity="center"
         android:visibility="gone"
         android:src="@drawable/star_pink" />
-
 </FrameLayout>

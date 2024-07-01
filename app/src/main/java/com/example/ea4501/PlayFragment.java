@@ -43,7 +43,7 @@ public class PlayFragment extends Fragment {
     private TextInputLayout playerNameInputLayout;
     private TextInputEditText playerNameInput;
     private ImageButton playButton; // Changed from Button to ImageButton
-    private Button submitButton, nextButton, continueButton;
+    private Button submitButton, nextButton, continueButton, backButton;
     private TextView questionView, resultView, timerView, questionCounterView;
     private EditText answerInput;
     private String playerName;
@@ -79,6 +79,7 @@ public class PlayFragment extends Fragment {
         submitButton = view.findViewById(R.id.submitButton);
         nextButton = view.findViewById(R.id.nextButton);
         continueButton = view.findViewById(R.id.continueButton);
+        backButton = view.findViewById(R.id.backButton);
         fireworkView = view.findViewById(R.id.fireworkView);
     }
 
@@ -95,6 +96,7 @@ public class PlayFragment extends Fragment {
         submitButton.setOnClickListener(v -> checkAnswer());
         nextButton.setOnClickListener(v -> nextQuestion());
         continueButton.setOnClickListener(v -> startGame());
+        backButton.setOnClickListener(v -> backViews());
     }
 
     private void startGame() {
@@ -102,6 +104,7 @@ public class PlayFragment extends Fragment {
         playerNameInput.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         continueButton.setVisibility(View.GONE);
+        backButton.setVisibility(View.GONE);
         timerView.setVisibility(View.VISIBLE);  // Ensure timer is visible
         generateQuestions();
         currentQuestionIndex = 0;
@@ -202,16 +205,16 @@ public class PlayFragment extends Fragment {
         } else {
             endGame();
             continueButton.setVisibility(View.VISIBLE);
+            backButton.setVisibility(View.VISIBLE);
         }
     }
 
     private void endGame() {
         long endTime = System.currentTimeMillis();
         int totalTime = (int) ((endTime - startTime) / 1000); // total time in seconds
-        resultView.setText(String.format("%s, you got %d out of 10 correct! Total time: %d seconds", playerName, correctAnswers, totalTime));
+        int wrongAnswers = 10 - correctAnswers;
+        resultView.setText(String.format("%s, you got %d out of 10 correct and %d wrong! Total time: %d seconds", playerName, correctAnswers, wrongAnswers, totalTime));
         resultView.setVisibility(View.VISIBLE); // Make resultView visible
-        playerNameInputLayout.setVisibility(View.VISIBLE); // Ensure the TextInputLayout is visible
-        playButton.setVisibility(View.VISIBLE);
         questionView.setVisibility(View.GONE);
         answerInput.setVisibility(View.GONE);
         submitButton.setVisibility(View.GONE);
@@ -307,5 +310,13 @@ public class PlayFragment extends Fragment {
             @Override
             public void onAnimationRepeat(android.animation.Animator animator) { }
         });
+    }
+
+    private void backViews() {
+        resultView.setVisibility(View.GONE);
+        continueButton.setVisibility(View.GONE);
+        backButton.setVisibility(View.GONE);
+        playerNameInputLayout.setVisibility(View.GONE);
+        playButton.setVisibility(View.GONE);
     }
 }
