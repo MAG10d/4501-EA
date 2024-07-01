@@ -56,6 +56,7 @@ public class PlayFragment extends Fragment {
     private int[] answers = new int[10];
     private MediaPlayer mediaPlayer;
     private MediaPlayer bgmPlayer; // MediaPlayer for background music
+    private ImageView fireworkView; // Firework ImageView
 
     @Nullable
     @Override
@@ -78,6 +79,7 @@ public class PlayFragment extends Fragment {
         submitButton = view.findViewById(R.id.submitButton);
         nextButton = view.findViewById(R.id.nextButton);
         continueButton = view.findViewById(R.id.continueButton);
+        fireworkView = view.findViewById(R.id.fireworkView);
     }
 
     private void setupListeners() {
@@ -280,15 +282,12 @@ public class PlayFragment extends Fragment {
     }
 
     private void showFirework() {
-        ImageView firework = new ImageView(getActivity());
-        firework.setImageDrawable(getResources().getDrawable(R.drawable.star_pink, null));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100); // Set appropriate size
-        ((ViewGroup) getView()).addView(firework, params);
+        fireworkView.setVisibility(View.VISIBLE);
 
         AnimatorSet animatorSet = new AnimatorSet();
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(firework, "scaleX", 0.1f, 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(firework, "scaleY", 0.1f, 1f);
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(firework, "alpha", 1f, 0f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(fireworkView, "scaleX", 0.1f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(fireworkView, "scaleY", 0.1f, 1f);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(fireworkView, "alpha", 1f, 0f);
         animatorSet.playTogether(scaleX, scaleY, alpha);
         animatorSet.setDuration(1000);
         animatorSet.start();
@@ -299,7 +298,7 @@ public class PlayFragment extends Fragment {
 
             @Override
             public void onAnimationEnd(android.animation.Animator animator) {
-                ((ViewGroup) getView()).removeView(firework);
+                fireworkView.setVisibility(View.GONE);
             }
 
             @Override

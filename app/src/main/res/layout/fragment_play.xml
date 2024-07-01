@@ -1,4 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -6,85 +10,95 @@
     android:padding="16dp"
     android:background="@drawable/play_bg">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/playerNameInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="User name:"
-        android:background="@color/white_transparent_50">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/playerNameInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/playerNameInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="User name:"
+            android:background="@color/white_transparent_50">
 
-    <TextView
-        android:id="@+id/timerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/playerNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/timerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:paddingBottom="20dp"
+            android:background="@color/white_transparent_50" />
+
+        <ImageButton
+            android:id="@+id/button_play"
+            android:layout_width="69dp"
+            android:layout_height="54dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Play"
+            android:src="@drawable/ic_arrow_right_drop_circle" />
+
+        <TextView
+            android:id="@+id/questionCounterView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/questionView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/answerInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/resultView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:visibility="gone"
+            android:background="@color/white_transparent_50" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/fireworkView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
         android:visibility="gone"
-        android:paddingBottom="20dp"/>
+        android:src="@drawable/star_pink" />
 
-    <ImageButton
-        android:id="@+id/button_play"
-        android:layout_width="69dp"
-        android:layout_height="54dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Play"
-        android:src="@drawable/ic_arrow_right_drop_circle" />
-
-    <TextView
-        android:id="@+id/questionCounterView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:visibility="visible" />
-
-    <TextView
-        android:id="@+id/questionView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:visibility="gone" />
-
-    <EditText
-        android:id="@+id/answerInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/continueButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Continue"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/resultView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:visibility="gone"
-        android:background="@color/white_transparent_50" />
-
-
-</LinearLayout>
+</FrameLayout>
