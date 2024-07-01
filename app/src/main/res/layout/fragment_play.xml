@@ -7,6 +7,7 @@
     android:background="@drawable/play_bg">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/playerNameInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="User name:"
@@ -82,6 +83,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:background="@color/white_transparent_50" />
+
 
 </LinearLayout>

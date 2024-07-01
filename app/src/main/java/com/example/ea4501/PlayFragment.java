@@ -4,18 +4,25 @@ import androidx.fragment.app.Fragment;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,6 +40,7 @@ import androidx.annotation.Nullable;
  * create an instance of this fragment.
  */
 public class PlayFragment extends Fragment {
+    private TextInputLayout playerNameInputLayout;
     private TextInputEditText playerNameInput;
     private ImageButton playButton; // Changed from Button to ImageButton
     private Button submitButton, nextButton, continueButton;
@@ -46,6 +54,8 @@ public class PlayFragment extends Fragment {
     private Random random = new Random();
     private String[] questions = new String[10];  // Add this line to declare the questions array
     private int[] answers = new int[10];
+    private MediaPlayer mediaPlayer;
+    private MediaPlayer bgmPlayer; // MediaPlayer for background music
 
     @Nullable
     @Override
@@ -57,6 +67,7 @@ public class PlayFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        playerNameInputLayout = view.findViewById(R.id.playerNameInputLayout);
         playerNameInput = view.findViewById(R.id.playerNameInput);
         playButton = view.findViewById(R.id.button_play);
         questionView = view.findViewById(R.id.questionView);
@@ -85,6 +96,7 @@ public class PlayFragment extends Fragment {
     }
 
     private void startGame() {
+        playerNameInputLayout.setVisibility(View.GONE);
         playerNameInput.setVisibility(View.GONE);
         playButton.setVisibility(View.GONE);
         continueButton.setVisibility(View.GONE);
@@ -96,6 +108,7 @@ public class PlayFragment extends Fragment {
         timerHandler.postDelayed(timerRunnable, 0); // Start the timer
         updateQuestionCounter();
         showQuestion();
+        startBackgroundMusic(); // Start background music
     }
 
     private void generateQuestions() {
@@ -150,6 +163,7 @@ public class PlayFragment extends Fragment {
         questionView.setText(questions[currentQuestionIndex]);
         answerInput.setText("");
         resultView.setText("");
+        resultView.setVisibility(View.GONE); // Hide resultView initially
     }
 
     private void checkAnswer() {
@@ -160,15 +174,20 @@ public class PlayFragment extends Fragment {
             if (answer == answers[currentQuestionIndex]) {
                 correctAnswers++;
                 resultView.setText("Correct!");
+                    playSound(R.raw.correct);
+                    showFirework(); // Show firework animation
             } else {
                 resultView.setText("Incorrect! The correct answer was " + answers[currentQuestionIndex]);
+                    playSound(R.raw.incorrect);
             }
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(), "Please enter a valid number", Toast.LENGTH_SHORT).show();
             return;
             }
+            resultView.setVisibility(View.VISIBLE); // Make resultView visible
             submitButton.setVisibility(View.GONE);
             nextButton.setVisibility(View.VISIBLE);
+            applyAnimation(resultView); // Apply animation to resultView
         } else {
             Toast.makeText(getActivity(), "Please enter an answer", Toast.LENGTH_SHORT).show();
         }
@@ -188,7 +207,8 @@ public class PlayFragment extends Fragment {
         long endTime = System.currentTimeMillis();
         int totalTime = (int) ((endTime - startTime) / 1000); // total time in seconds
         resultView.setText(String.format("%s, you got %d out of 10 correct! Total time: %d seconds", playerName, correctAnswers, totalTime));
-        playerNameInput.setVisibility(View.VISIBLE);
+        resultView.setVisibility(View.VISIBLE); // Make resultView visible
+        playerNameInputLayout.setVisibility(View.VISIBLE); // Ensure the TextInputLayout is visible
         playButton.setVisibility(View.VISIBLE);
         questionView.setVisibility(View.GONE);
         answerInput.setVisibility(View.GONE);
@@ -197,6 +217,7 @@ public class PlayFragment extends Fragment {
         timerView.setVisibility(View.GONE);
         questionCounterView.setVisibility(View.GONE);
         timerHandler.removeCallbacks(timerRunnable); // Stop the timer
+        stopBackgroundMusic(); // Stop background music
         saveRecord(totalTime);
     }
 
@@ -226,4 +247,66 @@ public class PlayFragment extends Fragment {
             timerHandler.postDelayed(this, 500);
         }
     };
+
+    private void playSound(int soundResId) {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+        mediaPlayer = MediaPlayer.create(getActivity(), soundResId);
+        mediaPlayer.start();
+    }
+
+    private void startBackgroundMusic() {
+        if (bgmPlayer == null) {
+            bgmPlayer = MediaPlayer.create(getActivity(), R.raw.background_music);
+            bgmPlayer.setLooping(true); // Loop the background music
+        }
+        bgmPlayer.start();
+}
+
+    private void stopBackgroundMusic() {
+        if (bgmPlayer != null && bgmPlayer.isPlaying()) {
+            bgmPlayer.stop();
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
+    }
+
+    private void applyAnimation(View view) {
+        Animation fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+        Animation scaleUp = AnimationUtils.loadAnimation(getActivity(), R.anim.scale_up);
+        view.startAnimation(fadeIn);
+        view.startAnimation(scaleUp);
+    }
+
+    private void showFirework() {
+        ImageView firework = new ImageView(getActivity());
+        firework.setImageDrawable(getResources().getDrawable(R.drawable.star_pink, null));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 100); // Set appropriate size
+        ((ViewGroup) getView()).addView(firework, params);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(firework, "scaleX", 0.1f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(firework, "scaleY", 0.1f, 1f);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(firework, "alpha", 1f, 0f);
+        animatorSet.playTogether(scaleX, scaleY, alpha);
+        animatorSet.setDuration(1000);
+        animatorSet.start();
+
+        animatorSet.addListener(new android.animation.Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(android.animation.Animator animator) { }
+
+            @Override
+            public void onAnimationEnd(android.animation.Animator animator) {
+                ((ViewGroup) getView()).removeView(firework);
+            }
+
+            @Override
+            public void onAnimationCancel(android.animation.Animator animator) { }
+
+            @Override
+            public void onAnimationRepeat(android.animation.Animator animator) { }
+        });
+    }
 }
